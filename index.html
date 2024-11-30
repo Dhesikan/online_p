@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jolly Travels - Payment</title>
+    <link rel="icon" href="JT.png" />
+    <style>
+      /* Your styles */
+      /* Styles for the page */
+      body {
+        font-family: "Trirong", serif;
+        background: linear-gradient(
+          to right,
+          #0c7cb4,
+          #1c9bdb,
+          #3ca7dd,
+          #59abd4
+        );
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        position: relative; /* Add position relative to position logo */
+      }
+
+      /* Logo styles */
+      .logo {
+        position: absolute;
+        top: 50px;
+        left: 70px;
+        height: 150px; /* Adjust the height of your logo */
+        width: auto; /* Maintain aspect ratio */
+        border: 5px solid #ffffff; /* White border around logo */
+        border-radius: 12px; /* Optional rounded corners for logo */
+      }
+
+      .payment-container {
+        background: #ffffff;
+        padding: 20px 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 350px;
+        position: relative; /* Position relative for centering the spinner */
+      }
+
+      .payment-container h1 {
+        font-size: 24px;
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+      }
+
+      .form-group label {
+        font-weight: bold;
+        margin-bottom: 8px;
+        display: block;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        background-color: #f9f9f9;
+        color: #555;
+      }
+
+      .btn-submit {
+        background-color: #1791c8;
+        color: white;
+        padding: 12px 18px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+        margin-top: 10px;
+      }
+
+      .btn-submit:hover {
+        background-color: #1c9bdb;
+      }
+
+      .confirmation {
+        margin-top: 20px;
+        font-size: 18px;
+        color: #0c7cb4;
+        display: none;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+      }
+
+      .confirmation span {
+        font-weight: bold;
+        font-size: 20px;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+      }
+
+      /* Centered loading spinner styles */
+      .loading-spinner {
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid #1791c8;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto; /* Center horizontally and add some space */
+        display: none; /* Hidden initially */
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Logo placed in the top-left corner -->
+    <img src="JT.png" alt="Jolly Travels Logo" class="logo" />
+
+    <div class="payment-container">
+      <h1>Complete Payment</h1>
+      <div class="form-group">
+        <label for="amount">Amount to Pay</label>
+        <input type="text" id="amount" readonly />
+      </div>
+
+      <!-- Loading spinner here -->
+      <div class="loading-spinner" id="loadingSpinner"></div>
+
+      <button class="btn-submit" id="payButton" onclick="processPayment()">
+        Pay Now
+      </button>
+
+      <div class="confirmation" id="confirmation-message" style="display: none">
+        Payment Successful! Redirecting to OTP verification...
+      </div>
+    </div>
+
+    <script>
+      // Function to generate a random 5-digit code
+      function generateCode() {
+        return Math.floor(10000 + Math.random() * 90000).toString();
+      }
+
+      // Generate random amount for payment
+      const randomAmount = Math.floor(Math.random() * 5000) + 1;
+      document.getElementById("amount").value = `₹ ${randomAmount}`;
+
+      // Process payment and redirect to OTP verification
+      function processPayment() {
+        const confirmationMessage = document.getElementById(
+          "confirmation-message"
+        );
+        const payButton = document.getElementById("payButton");
+        const loadingSpinner = document.getElementById("loadingSpinner");
+
+        // Disable the button and show loading spinner
+        payButton.disabled = true;
+        loadingSpinner.style.display = "block"; // Show loading spinner
+
+        setTimeout(() => {
+          const otp = generateCode(); // Generate OTP
+          console.log(`Generated OTP: ${otp}`); // Log the OTP
+          localStorage.setItem("paymentCode", otp); // Store OTP in localStorage
+          confirmationMessage.style.display = "block"; // Show confirmation message
+          confirmationMessage.innerHTML = `Payment Successful! Your OTP is: ${otp}. Redirecting to OTP verification...`;
+
+          // Hide loading spinner and redirect after a short delay
+          loadingSpinner.style.display = "none";
+          setTimeout(() => {
+            window.location.href = "otp-verification.html";
+          }, 2000);
+        }, 4000); // Simulate delay for processing
+      }
+    </script>
+  </body>
+</html>
